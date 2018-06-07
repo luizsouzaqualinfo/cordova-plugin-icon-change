@@ -1,0 +1,26 @@
+{
+  "name": "cordova-plugin-icon-change",
+  "version": "0.0.1",
+  "cordova": {
+    "id": "cordova-plugin-icon-change",
+    "platforms": [
+      "android"
+    ]
+  },
+  "description": "Muda o icode do aplicativo",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luizsouzaqualinfo/cordova-plugin-icon-change.git"
+  },
+  "keywords": [
+    "icon",
+    "change",
+    "app"
+  ],
+  "author": "Luiz Augusto Amorim de Souza",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luizsouzaqualinfo/cordova-plugin-icon-change/issues"
+  },
+  "homepage": "https://github.com/luizsouzaqualinfo/cordova-plugin-icon-change#readme"
+}
