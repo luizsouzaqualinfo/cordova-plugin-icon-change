@@ -41,16 +41,13 @@ public class IconChange extends CordovaPlugin {
     
     PluginResult result = null;
 
-    switch(action) {
-        case "getCurrent":
-            result = new PluginResult(PluginResult.Status.OK, getCurrentIconName());
-            break;
-        case "change":
-            if(!getCurrentIconName().equals(args.getString(0))) {
-                changeIcon(args.getString(0));
-            }
-            result = new PluginResult(PluginResult.Status.OK);
-            break;
+    if("getCurrent".equals(action)) {
+        result = new PluginResult(PluginResult.Status.OK, getCurrentIconName());
+    } else if ("change".equals(action)) {
+        if(!getCurrentIconName().equals(args.getString(0))) {
+            changeIcon(args.getString(0));
+        }
+        result = new PluginResult(PluginResult.Status.OK);
     }
 
     callbackContext.sendPluginResult(result);
