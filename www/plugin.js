@@ -4,11 +4,11 @@ var exec = require('cordova/exec');
 var PLUGIN_NAME = 'IconChange';
 
 var IconChange = {
-  change: function (name) {
-    exec(null, null, PLUGIN_NAME, "change", [name]);
+  change: function (name, success, error) {
+    exec(success, error, PLUGIN_NAME, "change", [name]);
   }, 
-  getCurrent: function () {
-    exec(null, null, PLUGIN_NAME, "getCurrent", []);
+  getCurrent: function (success, error) {
+    exec(success, error, PLUGIN_NAME, "getCurrent", []);
   }
 };
 
