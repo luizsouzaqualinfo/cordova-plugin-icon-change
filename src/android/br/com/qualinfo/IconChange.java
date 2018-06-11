@@ -20,8 +20,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 public class IconChange extends CordovaPlugin {
-  private static final String LOG_TAG = "QUALINFO";
+  private static final String LOG_TAG = "QUALINFO_CHANGE_ICON";
   private final String PREF_LAST_ICON_NAME = "LAST_ICON_NAME";
+  private final String DEFAULT_ICON_NAME = "MainActivity";
 
   private String mCurrentIconName = null;
 
@@ -44,11 +45,12 @@ public class IconChange extends CordovaPlugin {
     if("getCurrent".equals(action)) {
         result = new PluginResult(PluginResult.Status.OK, getCurrentIconName());
     } else if ("change".equals(action)) {
-        if(!getCurrentIconName().equals(args.getString(0))) {
-            changeIcon(args.getString(0));
-        }
+        changeIcon(args.getString(0), true);
         result = new PluginResult(PluginResult.Status.OK);
-    }
+    } else if ("reset".equals(action)) {
+        resetIcon();
+        result = new PluginResult(PluginResult.Status.OK);
+    } 
 
     callbackContext.sendPluginResult(result);
     return true;
@@ -68,7 +70,7 @@ public class IconChange extends CordovaPlugin {
   private String getCurrentIconName() {
       if(mCurrentIconName == null) {
           mCurrentIconName = getPreferences(this.cordova.getActivity().getApplicationContext())
-                  .getString(PREF_LAST_ICON_NAME, "MainActivity");
+                  .getString(PREF_LAST_ICON_NAME, DEFAULT_ICON_NAME);
       }
         
       return mCurrentIconName;
@@ -79,17 +81,26 @@ public class IconChange extends CordovaPlugin {
     *
     * @param newIconName
     */
-  private void changeIcon(String newIconName) {
+  private void changeIcon(String newIconName, boolean showMessage) {
+
+      if (getCurrentIconName().equals(newIconName)) {
+          Log.d(LOG_TAG, "O icone ja esta sendo mostrado");
+          return;
+      }
+
       Context c = this.cordova.getActivity().getApplicationContext();
       String packageName = c.getPackageName();
+      Log.d(LOG_TAG, "nome do icone recebido: " + newIconName);
 
       try {
+          Log.d(LOG_TAG, "Ativando: " + newIconName);
           // Ativando um icone
           c.getPackageManager()
                   .setComponentEnabledSetting(
                           new ComponentName(packageName, packageName + "." + newIconName),
                           PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                           PackageManager.DONT_KILL_APP);
+          Log.d(LOG_TAG, "Desativando: " + getCurrentIconName());
           // Desativando o antigo
           c.getPackageManager()
                   .setComponentEnabledSetting(
@@ -99,18 +110,28 @@ public class IconChange extends CordovaPlugin {
 
           // Se tudo ocorreu como esperado entao salva o novo nome
           mCurrentIconName = newIconName;
+          Log.d(LOG_TAG, "Salvando: " + newIconName);
           getPreferences(c)
                   .edit()
                   .putString(PREF_LAST_ICON_NAME, newIconName)
                   .apply();
-
-          new AlertDialog.Builder(this.cordova.getActivity())
-                  .setMessage("A aplicativo será fechado em alguns segundos, após isso acesse novamente através do novo ícone")
-                  .setCancelable(false)
-                  .setNegativeButton("Fechar", null)
-                  .show();
+          if (showMessage) {  
+              Log.d(LOG_TAG, "Mostrando Dialogo...");
+              new AlertDialog.Builder(this.cordova.getActivity())
+                      .setMessage("A aplicativo será fechado em alguns segundos, após isso acesse novamente através do novo ícone")
+                      .setCancelable(false)
+                      .setNegativeButton("Fechar", null)
+                      .show();
+          }        
       } catch (Exception e) {
           e.printStackTrace();
       }
+  }
+
+  /**
+   * Retorna o &iacute;cone do aplicativo para o &iacute;cone padr&atilde;o
+   */
+  private void resetIcon() {
+    changeIcon(DEFAULT_ICON_NAME, false);
   }
 }

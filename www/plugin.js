@@ -9,6 +9,9 @@ var IconChange = {
   }, 
   getCurrent: function (success, error) {
     exec(success, error, PLUGIN_NAME, "getCurrent", []);
+  },
+  reset: function (success, error) {
+    exec(success, error, PLUGIN_NAME, "reset", []);
   }
 };
 
